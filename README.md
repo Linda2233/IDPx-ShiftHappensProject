@@ -1,3 +1,5 @@
+# IDPx-ShiftHappensProject
+For IDPx course: Functional Prototype of a WebApp: Adulting101 with Flower
 
   # START EVERYTHING: JUST open the server.py file and click on run(play button) !!!!!!!!!!!!!!!!
   # or run in the terminal: python server.py
@@ -12,3 +14,6 @@
 
   Run `npm run dev` to start the development server.
   
+
+
+
