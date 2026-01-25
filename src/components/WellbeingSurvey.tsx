@@ -24,8 +24,9 @@ export function WellbeingSurvey({ onClose, darkMode }: WellbeingSurveyProps) {
     { id: 'overwhelmed', label: 'I did NOT feel overwhelmed at work today', range: '0 - 10' },
   ];
 
+  //bg-black 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-[rgba(0,0,0,0.48)] bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className={`w-full max-w-md ${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl p-6 max-h-[90vh] overflow-y-auto`}>
         <div className="flex items-center justify-between mb-4">
           <h2 className={darkMode ? 'text-white' : 'text-gray-800'}>

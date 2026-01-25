@@ -16,6 +16,7 @@ interface InfoTopic {
   description: string;
   hasActionableTasks: boolean;
   tasks?: Task[];
+  sources?: string[];
 }
 
 export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoScreenProps) {
@@ -34,6 +35,10 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
         { id: 'tax-2', title: 'Keep records of work expenses', completed: false },
         { id: 'tax-3', title: 'Learn about tax deductions', completed: false },
       ],
+      sources: [
+        'https://www.eu-gleichbehandlungsstelle.de/eugs-en/eu-citizens/information-center/taxes',
+        'https://www.gov.uk/income-tax-rates',
+      ],
     },
     {
       id: 'payslip',
@@ -46,6 +51,10 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
         { id: 'payslip-1', title: 'Identify your gross pay', completed: false },
         { id: 'payslip-2', title: 'Understand your net pay', completed: false },
         { id: 'payslip-3', title: 'Review all deductions', completed: false },
+      ],
+      sources: [
+        'https://www.simplegermany.com/german-payslip-explained/',
+        'https://www.firma.de/en/accountancy/lohnabrechnung-how-to-read-a-german-payslip/',
       ],
     },
     {
@@ -60,6 +69,11 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
         { id: 'budget-2', title: 'Track your spending for a week', completed: false },
         { id: 'budget-3', title: 'Apply the 50/30/20 rule', completed: false },
       ],
+      sources: [
+        'Dave Ramsey - Budget Planning Guide',
+        'NerdWallet - Budgeting Basics',
+        'YNAB (You Need A Budget)',
+      ],
     },
     {
       id: 'housing',
@@ -73,6 +87,11 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
         { id: 'housing-2', title: 'Learn about tenant rights', completed: false },
         { id: 'housing-3', title: 'Document apartment condition', completed: false },
       ],
+      sources: [
+        'Shelter - Tenant Rights Guide',
+        'Citizens Advice - Renting',
+        'UK Government - Rented Housing Guide',
+      ],
     },
     {
       id: 'wellness',
@@ -81,6 +100,11 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
       relevantLevel: 0,
       description: 'Tips for maintaining mental health and setting boundaries at work.',
       hasActionableTasks: false,
+      sources: [
+        'Mind - Work and Mental Health',
+        'Mental Health Foundation',
+        'ACAS - Work-Life Balance',
+      ],
     },
   ];
 
@@ -137,6 +161,22 @@ export function InfoScreen({ userData, setCurrentScreen, updateUserData }: InfoS
                     In many countries, you can claim back tax on work-from-home expenses, professional development courses, and work equipment!
                   </p>
                 </div>
+              </div>
+            )}
+
+            {topic.sources && topic.sources.length > 0 && (
+              <div className={`p-4 rounded-lg ${userData.darkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
+                <h4 className={`mb-3 ${userData.darkMode ? 'text-white' : 'text-gray-800'}`}>
+                  Sources
+                </h4>
+                <ul className={`space-y-2 ${userData.darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  {topic.sources.map((source, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-gray-400 mt-0.5">•</span>
+                      <span>{source}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
 

@@ -1,5 +1,5 @@
 import { Screen } from '../App';
-import { Home, BarChart3, BookOpen, Users, Settings } from 'lucide-react';
+import { Home, BarChart3, BookOpen } from 'lucide-react';
 
 interface NavigationProps {
   currentScreen: Screen;
@@ -12,8 +12,6 @@ export function Navigation({ currentScreen, setCurrentScreen, darkMode }: Naviga
     { id: 'home' as Screen, icon: Home, label: 'Home' },
     { id: 'progress' as Screen, icon: BarChart3, label: 'Progress' },
     { id: 'info' as Screen, icon: BookOpen, label: 'Info' },
-    { id: 'connect' as Screen, icon: Users, label: 'Connect' },
-    { id: 'settings' as Screen, icon: Settings, label: 'Settings' },
   ];
 
   return (

@@ -249,9 +249,11 @@ export function ProgressScreen({ userData, updateUserData }: ProgressScreenProps
           <p className={`mt-2 ${userData.darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {allTasksCompleted 
               ? daysRemaining > 0 
-                ? `All tasks completed! Wait ${daysRemaining} ${daysRemaining === 1 ? 'day' : 'days'} to advance to next week`
+                ? `All personal tasks completed!`
+                //? `All personal tasks completed! Wait ${daysRemaining} ${daysRemaining === 1 ? 'day' : 'days'} to advance to next week`
                 : 'Ready to advance to next week!'
-              : `Complete all tasks to unlock next week`
+              : `Complete all tasks until next week`
+              //`Complete all tasks to unlock next week`
             }
           </p>
         </div>
@@ -259,7 +261,7 @@ export function ProgressScreen({ userData, updateUserData }: ProgressScreenProps
         {/* Weekly Progress */}
         <div className={`p-4 rounded-lg ${userData.darkMode ? 'bg-gray-700' : 'bg-white'} shadow-sm`}>
           <h3 className={`mb-3 ${userData.darkMode ? 'text-white' : 'text-gray-800'}`}>
-            This Week
+            Current Streak
           </h3>
           <div className="flex gap-2 mb-2">
             {[1, 2, 3, 4, 5, 6, 7].map((day) => (

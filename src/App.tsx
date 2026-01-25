@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
-import { LoginScreen } from './components/LoginScreen';
 import { HomeScreen } from './components/HomeScreen';
 import { ProgressScreen } from './components/ProgressScreen';
 import { InfoScreen } from './components/InfoScreen';
-import { ConnectScreen } from './components/ConnectScreen';
-import { SettingsScreen } from './components/SettingsScreen';
 import { Navigation } from './components/Navigation';
 import { ProfileSetupScreen, ProfileData } from './components/ProfileSetupScreen';
 
@@ -37,10 +34,10 @@ export interface UserData {
 }
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('login');
+  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [userData, setUserData] = useState<UserData>({
-    isLoggedIn: false,
+    isLoggedIn: true,
     name: '',
     level: 0,
     flowerGrowth: 0,
@@ -61,16 +58,14 @@ function App() {
     ],
     weekStartDate: null,
     currentWeek: 1,
+    profileSetupComplete: true,
   });
 
   useEffect(() => {
     const savedData = localStorage.getItem('adultingAppData');
     if (savedData) {
       const parsed = JSON.parse(savedData);
-      setUserData(parsed);
-      if (parsed.isLoggedIn) {
-        setCurrentScreen('home');
-      }
+      setUserData({ ...parsed, profileSetupComplete: true });
     }
   }, []);
 
@@ -108,7 +103,7 @@ function App() {
 
   const handleLogout = () => {
     setUserData({
-      isLoggedIn: false,
+      isLoggedIn: true,
       name: '',
       level: 0,
       flowerGrowth: 0,
@@ -119,21 +114,18 @@ function App() {
       suggestedTasks: [],
       weekStartDate: null,
       currentWeek: 1,
-      profileSetupComplete: false,
+      profileSetupComplete: true,
     });
-    setCurrentScreen('login');
+    setCurrentScreen('home');
   };
 
   const updateUserData = (updates: Partial<UserData>) => {
     setUserData({ ...userData, ...updates });
   };
 
-  if (!userData.isLoggedIn) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
-
   // Show profile setup screen if user hasn't completed it yet
-  if (userData.isLoggedIn && !userData.profileSetupComplete) {
+  /*
+  if (!userData.profileSetupComplete) {
     return (
       <ProfileSetupScreen 
         initialName={userData.name}
@@ -145,6 +137,8 @@ function App() {
       />
     );
   }
+  */
+
 
   return (
     <div className={`min-h-screen ${userData.darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
