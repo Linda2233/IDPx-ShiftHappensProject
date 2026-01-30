@@ -1,51 +1,73 @@
-from http.server import HTTPServer, SimpleHTTPRequestHandler
-from urllib.parse import urlparse, parse_qs
+from flask import Flask, request, jsonify, send_from_directory
+import serial
 import os
 
-class MyHandler(SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        # Serve files from the 'build' directory
-        super().__init__(*args, directory=os.path.join(os.path.dirname(__file__), 'build'), **kwargs)
-    
-    def do_GET(self):
-        # Basic request log to debug incoming calls
-        print(f"GET {self.path}")
-        # Parse the URL
-        parsed_path = urlparse(self.path)
-        
-        # Check if this is an API request
-        if parsed_path.path == '/api/number':
-            # Parse query parameters
-            query_params = parse_qs(parsed_path.query)
-            
-            # Get the 'value' parameter
-            if 'value' in query_params:
-                received_value = query_params['value'][0]
-                print(f"Received number: {received_value}") #SPÄTER ERSETZEN für Code um Servo über Arduino Q anzusteuern.
-                
-                # Send success response
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
-                self.end_headers()
-                response = f'{{"status": "success", "received": {received_value}}}'
-                self.wfile.write(response.encode())
-            else:
-                # Send error response
-                self.send_response(400)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-                self.wfile.write(b'{"status": "error", "message": "No value provided"}')
-        else:
-            # Serve static files
-            super().do_GET()
+app = Flask(__name__)
 
-def run_server(port=8080):
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, MyHandler)
-    print(f"Server running at http://localhost:{port}")
-    print("Press Ctrl+C to stop the server")
-    httpd.serve_forever()
+# =====================
+# CONFIG — ADJUST THESE
+# =====================
 
-if __name__ == '__main__':
-    run_server()
+PORT = 8000
+
+# macOS example:
+# run: ls /dev/tty.usb*
+SERIAL_PORT = "/dev/cu.usbmodem22527826842"  # ⬅ CHANGE THIS
+BAUD_RATE = 115200
+
+# Vite build output folder
+WEB_DIR = os.path.join(os.path.dirname(__file__), "build")
+
+# =====================
+# SERIAL SETUP
+# =====================
+
+ser = None
+try:
+    ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+    print(f"[OK] Serial open: {SERIAL_PORT} @ {BAUD_RATE}")
+except Exception as e:
+    print(f"[WARN] Serial not available: {e}")
+
+# =====================
+# STATIC FILES Test
+# =====================
+
+@app.route("/")
+def index():
+    return send_from_directory(WEB_DIR, "index.html")
+
+@app.route("/<path:path>")
+def static_files(path):
+    return send_from_directory(WEB_DIR, path)
+
+# =====================
+# API: WEB → ARDUINO
+# =====================
+
+@app.route("/state", methods=["POST"])
+def receive_state():
+    data = request.get_json(silent=True) or {}
+
+    try:
+        flower_state = int(str(data.get("value", "")).strip())
+    except Exception:
+        return jsonify({"error": "Invalid value"}), 400
+
+    print("Flower state received:", flower_state)
+    print("Serial connected:", bool(ser))
+
+    if ser:
+        try:
+            ser.write(f"{flower_state}\n".encode("utf-8"))
+        except Exception as e:
+            return jsonify({"error": f"Serial write failed: {e}"}), 500
+
+    return jsonify({"status": "ok"})
+
+# =====================
+# START SERVER
+# =====================
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=PORT)
